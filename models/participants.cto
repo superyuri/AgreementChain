@@ -1,0 +1,56 @@
+/**
+ * 参与者
+ */
+namespace org.synu.contract_network.participants
+
+participant EndUser identified by Id {
+  o String Id
+  o Person personInfo optional
+  o Organization orgInfo optional
+  o UserType userType
+}
+
+enum UserType {
+o Personal
+o Organization
+}
+
+abstract concept Organization{
+  o String title optional
+  o String IDCard optional
+  o Address address optional
+  o String tel optional
+  o String website optional
+}
+
+abstract concept Person {
+  o String title optional
+  o String IDCard optional
+  o String firstName  optional
+  o String lastName  optional
+  o String[] middleNames  optional
+  o ContactDetails contactDetails optional
+}
+
+concept ContactDetails {
+  o String email  optional
+  o String mobilePhone  optional
+  o String homePhone optional
+  o Address address optional
+}
+
+
+/**
+ * A concept for a simple street address
+ */
+concept Address {
+  o String city optional
+  o String country optional
+  o String locality optional
+  o String region optional
+  o String street optional
+  o String street2 optional
+  o String street3 optional
+  o String postalCode optional
+  o String postOfficeBoxNumber optional
+}

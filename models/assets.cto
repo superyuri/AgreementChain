@@ -1,0 +1,109 @@
+/**
+ * 资产
+ */
+namespace org.synu.contract_network.assets
+
+import org.synu.contract_network.participants.EndUser
+
+/**
+ * 合同资产
+ */
+asset Contract identified by Id {
+  o String Id
+  --> EndUser founder
+  o Signature[] signatures
+  o String Title
+  o String Extension
+  o String Content optional
+  o Template template optional
+  o String templateData optional
+  o DateTime SignDeadline optional
+  
+}
+/**
+ * 合同模板资产
+ */
+asset Template identified by Id {
+  o String Id
+  o String Title
+  o TemplateExtension Extension
+  o String Content
+  o String TemplateHash
+  o Boolean Enable
+  o String Description optional
+  --> EndUser owner
+}
+/**
+ * 图章/签名图片基类
+ */
+abstract asset SignatureImage identified by Id {
+  o String Id
+  o String Title optional
+  o SignatureImageExtension extension
+  o String Content
+  o String ContentHash
+  o Boolean Enable
+  o String Description optional
+  --> EndUser owner
+}
+/**
+ * 图章资产
+ */
+asset SealImage extends SignatureImage {
+}/**
+ * 签字图片资产
+ */
+asset SignTextImage extends SignatureImage {
+}
+
+/**
+* 签名图位置
+*/
+abstract concept SignatureImagePos {
+  o Integer x
+  o Integer y
+}
+/**
+* 签署位
+*/
+abstract concept Signature {
+  --> EndUser user
+  o SignStatus status
+  --> SealImage sealImage optional
+  o SignatureImagePos sealImagePos optional
+  --> SignTextImage signImage optional
+  o SignatureImagePos signTextImagePos optional
+  o DateTime SignTime optional
+}
+/**
+* 模板扩展名
+*/
+enum TemplateExtension {
+o Html
+}
+/**
+* 图章/签名图片扩展名
+*/
+enum SignatureImageExtension {
+o Jpeg
+o Png
+}
+/**
+* 合同状态
+*/
+enum ContractStatus {
+o WaitSigning
+o PartSigned
+o Effective
+o Reject
+o Revoke
+o Closed
+}
+/**
+* 签署状态
+*/
+enum SignStatus {
+o WaitSigning
+o Signed
+o Reject
+}
