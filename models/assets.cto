@@ -1,9 +1,9 @@
 /**
  * 资产
  */
-namespace org.synu.contract_network.assets
+namespace org.synu.contractnetwork.assets
 
-import org.synu.contract_network.participants.EndUser
+import org.synu.contractnetwork.participants.EndUser
 
 /**
  * 合同资产

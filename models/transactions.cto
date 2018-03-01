@@ -1,8 +1,8 @@
 /**
  * 事务
  */
-namespace org.synu.contract_network.transactions
-import org.synu.contract_network.assets.Contract
+namespace org.synu.contractnetwork.transactions
+import org.synu.contractnetwork.assets.Contract
 
 transaction CreateContract {
   --> Contract contract

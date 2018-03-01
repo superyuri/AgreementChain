@@ -1,7 +1,7 @@
 /**
  * 参与者
  */
-namespace org.synu.contract_network.participants
+namespace org.synu.contractnetwork.participants
 
 participant EndUser identified by Id {
   o String Id

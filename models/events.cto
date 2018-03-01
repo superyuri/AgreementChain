@@ -1,8 +1,8 @@
 /**
  * 事务
  */
-namespace org.synu.contract_network.event
-import org.synu.contract_network.assets.Contract
+namespace org.synu.contractnetwork.event
+import org.synu.contractnetwork.assets.Contract
 
 event CreateContractEvent {
   --> Contract contract

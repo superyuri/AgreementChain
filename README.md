@@ -1,4 +1,5 @@
 # Basic Sample Business Network
+# org.synu.contractnetwork
 
 > This is the "Hello World" of Hyperledger Composer samples, which demonstrates the core functionality of Hyperledger Composer by changing the value of an asset.
 

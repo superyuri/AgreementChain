@@ -3,25 +3,25 @@
  */
 rule EverybodyCanReadEverything {
     description: "Allow all participants read access to all resources"
-    participant: "org.synu.contract_network.EndUser"
+    participant: "org.synu.contractnetwork.participants.EndUser"
     operation: READ
-    resource: "org.synu.contract_network.*"
+    resource: "org.synu.contractnetwork.participants.*"
     action: ALLOW
 }
 //transactions
 rule EverybodyCanCreateContract {
     description: "Allow all participants to submit CreateContract"
-    participant: "org.synu.contract_network.EndUser"
+    participant: "org.synu.contractnetwork.participants.EndUser"
     operation: CREATE
-    resource: "org.synu.contract_network.transactions.CreateContract"
+    resource: "org.synu.contractnetwork.transactions.CreateContract"
     action: ALLOW
 }
 //访问自己的资源
 rule OwnerHasFullAccessToTheirTemplates {
     description: "Allow all participants full access to their Templates"
-    participant(p): "org.synu.contract_network.EndUser"
+    participant(p): "org.synu.contractnetwork.participants.EndUser"
     operation: ALL
-    resource(r): "org.synu.contract_network.assets.Template"
+    resource(r): "org.synu.contractnetwork.assets.Template"
     condition: (r.owner.getIdentifier() === p.getIdentifier())
     action: ALLOW
 }
