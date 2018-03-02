@@ -15,7 +15,7 @@ o Personal
 o Organization
 }
 
-abstract concept Organization{
+concept Organization{
   o String title optional
   o String IDCard optional
   o Address address optional
@@ -23,7 +23,7 @@ abstract concept Organization{
   o String website optional
 }
 
-abstract concept Person {
+concept Person {
   o String title optional
   o String IDCard optional
   o String firstName  optional

@@ -59,14 +59,14 @@ asset SignTextImage extends SignatureImage {
 /**
 * 签名图位置
 */
-abstract concept SignatureImagePos {
+concept SignatureImagePos {
   o Integer x
   o Integer y
 }
 /**
 * 签署位
 */
-abstract concept Signature {
+concept Signature {
   --> EndUser user
   o SignStatus status
   --> SealImage sealImage optional

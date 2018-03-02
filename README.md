@@ -6,10 +6,10 @@
 This business network defines:
 
 **Participant**
-`SampleParticipant`
+`EndUser`
 
 **Asset**
-`SampleAsset`
+`Contract``SealImage``SignTextImage``Template`
 
 **Transaction**
 `SampleTransaction`
@@ -17,18 +17,67 @@ This business network defines:
 **Event**
 `SampleEvent`
 
-SampleAssets are owned by a SampleParticipant, and the value property on a SampleAsset can be modified by submitting a SampleTransaction. The SampleTransaction emits a SampleEvent that notifies applications of the old and new values for each modified SampleAsset.
+Contract are owned by a EndUser, and the value property on a SampleAsset can be modified by submitting a SampleTransaction. The SampleTransaction emits a SampleEvent that notifies applications of the old and new values for each modified SampleAsset.
 
 To test this Business Network Definition in the **Test** tab:
 
-Create a `SampleParticipant` participant:
+Create Alice `EndUser` participant:
 
 ```
 {
-  "$class": "org.synu.contract_network.SampleParticipant",
-  "participantId": "Toby",
-  "firstName": "Tobias",
-  "lastName": "Hunter"
+  "$class": "org.synu.contractnetwork.participants.EndUser",
+  "Id": "Alice@example.org",
+  "personInfo": {
+    "$class": "org.synu.contractnetwork.participants.Person",
+    "title": "Alice Robot",
+    "IDCard": "211003199901011234",
+    "firstName": "Alice",
+    "lastName": "Robot",
+    "middleNames": [],
+    "contactDetails": {
+      "$class": "org.synu.contractnetwork.participants.ContactDetails",
+      "email": "Alice@example.org",
+      "mobilePhone": "15012345678",
+      "address": {
+        "$class": "org.synu.contractnetwork.participants.Address",
+        "city": "Shenyang",
+        "country": "China",
+        "street": "Shenyang Normal University",
+        "postalCode": "110024"
+      }
+    }
+  },
+  "userType": "Personal"
+}
+```
+
+Create Bob `EndUser` participant:
+
+```
+{
+  "$class": "org.synu.contractnetwork.participants.EndUser",
+  "Id": "Bob@example.org",
+  "personInfo": {
+    "$class": "org.synu.contractnetwork.participants.Person",
+    "title": "Bob Robot",
+    "IDCard": "311001199501011349",
+    "firstName": "Bob",
+    "lastName": "Robot",
+    "middleNames": [],
+    "contactDetails": {
+      "$class": "org.synu.contractnetwork.participants.ContactDetails",
+      "email": "Bob@example.org",
+      "mobilePhone": "13512345678",
+      "address": {
+        "$class": "org.synu.contractnetwork.participants.Address",
+        "city": "Shenyang",
+        "country": "China",
+        "street": "Shenyang Normal University",
+        "postalCode": "110024"
+      }
+    }
+  },
+  "userType": "Personal"
 }
 ```
 
