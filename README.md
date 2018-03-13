@@ -9,10 +9,10 @@ This business network defines:
 `EndUser`
 
 **Asset**
-`Contract``SealImage``SignTextImage``Template`
+`Contract` `SealImage` `SignTextImage` `Template`
 
 **Transaction**
-`SampleTransaction`
+`CreateContract` `SignContract` `RevokeContract` `ContractVerify`
 
 **Event**
 `SampleEvent`
@@ -79,24 +79,48 @@ Create Bob `EndUser` participant:
 }
 ```
 
-Create a `SampleAsset` asset:
+Create a `SealImage` asset for Alice:
 
 ```
 {
-  "$class": "org.synu.contract_network.SampleAsset",
-  "assetId": "assetId:1",
-  "owner": "resource:org.synu.contract_network.SampleParticipant#Toby",
-  "value": "original value"
+  "$class": "org.synu.contractnetwork.assets.SealImage",
+  "Id": "1",
+  "Title": "Alice's Seal",
+  "extension": "Jpeg",
+  "Content": "",
+  "ContentHash": "8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92",
+  "Enable": true,
+  "owner": "resource:org.synu.contractnetwork.participants.EndUser#Alice@example.org"
 }
 ```
 
-Submit a `SampleTransaction` transaction:
+Create a `SealImage` asset for Bob:
 
 ```
 {
-  "$class": "org.synu.contract_network.SampleTransaction",
-  "asset": "resource:org.synu.contract_network.SampleAsset#assetId:1",
-  "newValue": "new value"
+  "$class": "org.synu.contractnetwork.assets.SealImage",
+  "Id": "2",
+  "Title": "Bob's Seal",
+  "extension": "Jpeg",
+  "Content": "",
+  "ContentHash": "481F6CC0511143CCDD7E2D1B1B94FAF0A700A8B49CD13922A70B5AE28ACAA8C5",
+  "Enable": true,
+  "owner": "resource:org.synu.contractnetwork.participants.EndUser#Bob@example.org"
+}
+```
+
+Submit a `CreateContract` transaction:
+
+```
+{
+  "$class": "org.synu.contractnetwork.transactions.CreateContract",
+  "founder": "resource:org.synu.contractnetwork.participants.EndUser#Alice@example.org",
+  "menbers": [
+    "resource:org.synu.contractnetwork.participants.EndUser#Alice@example.org",
+    "resource:org.synu.contractnetwork.participants.EndUser#Bob@example.org"
+  ],
+  "Title": "",
+  "Extension": ""
 }
 ```
 
