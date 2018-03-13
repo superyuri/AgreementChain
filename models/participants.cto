@@ -3,33 +3,32 @@
  */
 namespace org.synu.contractnetwork.participants
 
-participant EndUser identified by Id {
-  o String Id
-  o Person personInfo optional
-  o Organization orgInfo optional
-  o UserType userType
-}
+  participant EndUser identified by Id {
+    o String Id                       //参与者Id
+    o Person personInfo optional      //个人信息部分
+    o Organization orgInfo optional   //组织信息部分
+    o UserType userType               //用户类型
+  }
 
-enum UserType {
-o Personal
-o Organization
-}
+  enum UserType {
+  o Personal      //个人
+  o Organization  //组织
+  }
 
 concept Organization{
-  o String title optional
-  o String IDCard optional
-  o Address address optional
-  o String tel optional
-  o String website optional
+  o String title optional     //组织名
+  o String IDCard optional    //组织许可证书
+  o Address address optional  //组织地址
+  o String tel optional       //组织电话
+  o String website optional   //组织网站
 }
 
 concept Person {
-  o String title optional
-  o String IDCard optional
-  o String firstName  optional
-  o String lastName  optional
-  o String[] middleNames  optional
-  o ContactDetails contactDetails optional
+  o String title optional                   //全名
+  o String IDCard optional                  //证件号
+  o String firstName  optional              //姓
+  o String lastName  optional               //名
+  o ContactDetails contactDetails optional  //联系信息
 }
 
 concept ContactDetails {
