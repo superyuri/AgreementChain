@@ -9,48 +9,52 @@ import org.synu.contractnetwork.participants.EndUser
  * 合同资产
  */
 asset Contract identified by Id {
-  o String Id
-  --> EndUser founder
-  o Signature[] signatures
-  o String Title
-  o String Extension
-  o String Content optional
-  o Template template optional
-  o String templateData optional
-  o DateTime SignDeadline optional
-  
+  o String Id                         //标识符
+  --> EndUser founder                 //发起者
+  o Signature[] signatures            //用户签章记录
+  o String Title                      //合同标题 
+  o String Extension                  //合同扩展名
+  o String Content optional           //合同正文(Base64)
+  o String ContentHash optional       //合同正文哈希值
+  o String FinalDocument optional     //最终合同文档(Base64)
+  o String FinalDocumentHash optional //最终合同文档哈希值
+  o Template template optional        //合同模板
+  o String templateData optional      //合同内容Json
+  o ContractStatus status             //合同签署状态
+  o DateTime SignDeadline optional    //签署截止时间
 }
 /**
  * 合同模板资产
  */
 asset Template identified by Id {
-  o String Id
-  o String Title
-  o TemplateExtension Extension
-  o String Content
-  o String TemplateHash
-  o Boolean Enable
-  o String Description optional
-  --> EndUser owner
+  o String Id                     //标识符
+  o String Title                  //名称
+  o TemplateExtension Extension   //模板扩展名
+  o String Content                //模板内容(Base64)
+  o String TemplateHash           //模板内容哈希值
+  o Boolean Enable                //模板可用
+  o String Description optional   //描述
+  --> EndUser owner               //归属用户
 }
 /**
  * 图章/签名图片基类
  */
 abstract asset SignatureImage identified by Id {
-  o String Id
-  o String Title optional
-  o SignatureImageExtension extension
-  o String Content
-  o String ContentHash
-  o Boolean Enable
-  o String Description optional
-  --> EndUser owner
+  o String Id                         //标识符
+  o String Title optional             //名字
+  o SignatureImageExtension extension //图片扩展名
+  o String Content                    //图片内容(Base64)
+  o String ContentHash                //图片内容哈希值
+  o Boolean Enable                    //图片可用
+  o String Description optional       //描述
+  --> EndUser owner                   //归属用户
 }
 /**
  * 图章资产
  */
 asset SealImage extends SignatureImage {
-}/**
+}
+/**
  * 签字图片资产
  */
 asset SignTextImage extends SignatureImage {
@@ -67,13 +71,13 @@ concept SignatureImagePos {
 * 签署位
 */
 concept Signature {
-  --> EndUser user
-  o SignStatus status
-  --> SealImage sealImage optional
-  o SignatureImagePos sealImagePos optional
-  --> SignTextImage signImage optional
-  o SignatureImagePos signTextImagePos optional
-  o DateTime SignTime optional
+  --> EndUser user                              //签名者
+  o SignStatus status                           //签署状态
+  --> SealImage sealImage optional              //图章
+  o SignatureImagePos sealImagePos optional     //图章位置
+  --> SignTextImage signImage optional          //签名
+  o SignatureImagePos signTextImagePos optional //签名位置
+  o DateTime SignTime optional                  //签署时间
 }
 /**
 * 模板扩展名
@@ -89,21 +93,21 @@ o Jpeg
 o Png
 }
 /**
-* 合同状态
+* 合同状态枚举
 */
 enum ContractStatus {
-o WaitSigning
-o PartSigned
-o Effective
-o Reject
-o Revoke
-o Closed
+  o WaitSigning         //待签署
+  o PartSigned          //部分签署
+  o Effective           //生效
+  o Rejected            //被拒绝
+  o Revoked             //已撤回
+  o Closed              //已关闭
 }
 /**
-* 签署状态
+* 用户签署状态枚举
 */
 enum SignStatus {
-o WaitSigning
-o Signed
-o Reject
+o WaitSigning //待签署
+o Signed      //已签署
+o Reject      //拒绝签署
 }

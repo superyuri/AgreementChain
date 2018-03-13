@@ -4,7 +4,7 @@
 namespace org.synu.contractnetwork.participants
 
   participant EndUser identified by Id {
-    o String Id                       //参与者Id
+    o String Id                       //标识符
     o Person personInfo optional      //个人信息部分
     o Organization orgInfo optional   //组织信息部分
     o UserType userType               //用户类型

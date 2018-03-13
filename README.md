@@ -105,3 +105,10 @@ Submit a `SampleTransaction` transaction:
 After submitting this transaction, you should now see the transaction in the Transaction Registry and that a `SampleEvent` has been emitted. As a result, the value of the `assetId:1` should now be `new value` in the Asset Registry.
 
 Congratulations!
+
+过期机制
+
+
+getCurrentParticipant()
+
+https://hyperledger.github.io/composer/latest/business-network/programmatic-access-control
