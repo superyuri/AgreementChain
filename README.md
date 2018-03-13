@@ -114,13 +114,16 @@ Submit a `CreateContract` transaction:
 ```
 {
   "$class": "org.synu.contractnetwork.transactions.CreateContract",
+  "Id": "Contract1",
   "founder": "resource:org.synu.contractnetwork.participants.EndUser#Alice@example.org",
   "menbers": [
     "resource:org.synu.contractnetwork.participants.EndUser#Alice@example.org",
     "resource:org.synu.contractnetwork.participants.EndUser#Bob@example.org"
   ],
-  "Title": "",
-  "Extension": ""
+  "Title": "借款合同",
+  "Extension": "pdf",
+  "ContentHash": "C93FDA427F8BCD8B852CB05192974EBDE395226D6BE5D5B31B46FFC1B35A1F9F",
+  "SignDeadline": "2018-03-15T12:34:07.270Z"
 }
 ```
 

@@ -15,6 +15,7 @@ import org.synu.contractnetwork.participants.EndUser
  * 合同创建
  */
 transaction CreateContract {
+  o String Id
   --> EndUser founder                 //发起者
   --> EndUser[] menbers               //参与者
   o String Title                      //合同标题 
