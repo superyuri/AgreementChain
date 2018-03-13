@@ -4,6 +4,50 @@
 namespace org.synu.contractnetwork.transactions
 import org.synu.contractnetwork.assets.Contract
 
+import org.synu.contractnetwork.assets.Template
+import org.synu.contractnetwork.assets.Signature
+import org.synu.contractnetwork.assets.SealImage
+import org.synu.contractnetwork.assets.SignatureImagePos
+import org.synu.contractnetwork.assets.SignTextImage
+import org.synu.contractnetwork.assets.SignStatus
+import org.synu.contractnetwork.participants.EndUser
+/**
+ * 合同创建
+ */
 transaction CreateContract {
-  --> Contract contract
+  --> EndUser founder                 //发起者
+  o EndUser[] menbers                 //参与者
+  o String Title                      //合同标题 
+  o String Extension                  //合同扩展名
+  o String Content optional           //合同正文(Base64)
+  o String ContentHash optional       //合同正文哈希值
+  o Template template optional        //合同模板
+  o String templateData optional      //合同内容Json
+  o DateTime SignDeadline optional    //签署截止时间
+}
+
+/**
+ * 合同签署
+ */
+transaction SignContract {
+  --> Contract contract                         //要签署的合同
+  o EndUser user                                //签署人
+  --> SealImage sealImage optional              //图章
+  o SignatureImagePos sealImagePos optional     //图章位置
+  --> SignTextImage signImage optional          //签名
+  o SignatureImagePos signTextImagePos optional //签名位置
+  o SignStatus status                           //签署状态(签署/拒绝)
+}
+/**
+ * 合同撤销
+ */
+transaction RevokeContract {
+  --> Contract contract //要撤销的合同
+  o EndUser user        //合同拥有者
+}
+/**
+ * 合同验签
+ */
+transaction ContractVerify {
+  o String hash           //要查验的合同
 }

@@ -33,7 +33,6 @@ Create Alice `EndUser` participant:
     "IDCard": "211003199901011234",
     "firstName": "Alice",
     "lastName": "Robot",
-    "middleNames": [],
     "contactDetails": {
       "$class": "org.synu.contractnetwork.participants.ContactDetails",
       "email": "Alice@example.org",
@@ -63,7 +62,6 @@ Create Bob `EndUser` participant:
     "IDCard": "311001199501011349",
     "firstName": "Bob",
     "lastName": "Robot",
-    "middleNames": [],
     "contactDetails": {
       "$class": "org.synu.contractnetwork.participants.ContactDetails",
       "email": "Bob@example.org",
@@ -106,9 +104,3 @@ After submitting this transaction, you should now see the transaction in the Tra
 
 Congratulations!
 
-过期机制
-
-
-getCurrentParticipant()
-
-https://hyperledger.github.io/composer/latest/business-network/programmatic-access-control
