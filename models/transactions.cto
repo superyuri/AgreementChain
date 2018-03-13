@@ -3,7 +3,6 @@
  */
 namespace org.synu.contractnetwork.transactions
 import org.synu.contractnetwork.assets.Contract
-
 import org.synu.contractnetwork.assets.Template
 import org.synu.contractnetwork.assets.Signature
 import org.synu.contractnetwork.assets.SealImage
@@ -16,7 +15,6 @@ import org.synu.contractnetwork.participants.EndUser
  */
 transaction CreateContract {
   o String Id
-  --> EndUser founder                 //发起者
   --> EndUser[] menbers               //参与者
   o String Title                      //合同标题 
   o String Extension                  //合同扩展名
@@ -32,10 +30,9 @@ transaction CreateContract {
  */
 transaction SignContract {
   --> Contract contract                         //要签署的合同
-  --> EndUser user                                //签署人
   --> SealImage sealImage optional              //图章
   o SignatureImagePos sealImagePos optional     //图章位置
-  --> SignTextImage signImage optional          //签名
+  --> SignTextImage signTextImage optional          //签名
   o SignatureImagePos signTextImagePos optional //签名位置
   o SignStatus status                           //签署状态(签署/拒绝)
 }
@@ -44,7 +41,6 @@ transaction SignContract {
  */
 transaction RevokeContract {
   --> Contract contract //要撤销的合同
-  --> EndUser user        //合同拥有者
 }
 /**
  * 合同验签

@@ -1,126 +1,169 @@
-'use strict';
-/**
- * Write the unit tests for your transction processor functions here
+/*
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 
-const AdminConnection = require('composer-admin').AdminConnection;
-const BusinessNetworkConnection = require('composer-client').BusinessNetworkConnection;
-const BusinessNetworkDefinition = require('composer-common').BusinessNetworkDefinition;
-const IdCard = require('composer-common').IdCard;
-const MemoryCardStore = require('composer-common').MemoryCardStore;
+/**
+ * Sample transaction processor function.
+ * @param {org.synu.contractnetwork.transactions.CreateContract} tx The sample transaction instance.
+ * @transaction
+ */
+function CreateContract(param) {
+    // Get the current participant.
+    var currentParticipant = getCurrentParticipant();
+    var factory = getFactory();
+    var A_NS = 'org.synu.contractnetwork.assets';
+    var P_NS = 'org.synu.contractnetwork.participants';
 
-const path = require('path');
-
-require('chai').should();
-
-const namespace = 'org.synu.contractnetwork';
-const assetType = 'SampleAsset';
-
-describe('#' + namespace, () => {
-    // In-memory card store for testing so cards are not persisted to the file system
-    const cardStore = new MemoryCardStore();
-    let adminConnection;
-    let businessNetworkConnection;
-
-    before(() => {
-        // Embedded connection used for local testing
-        const connectionProfile = {
-            name: 'embedded',
-            type: 'embedded'
-        };
-        // Embedded connection does not need real credentials
-        const credentials = {
-            certificate: 'FAKE CERTIFICATE',
-            privateKey: 'FAKE PRIVATE KEY'
-        };
-
-        // PeerAdmin identity used with the admin connection to deploy business networks
-        const deployerMetadata = {
-            version: 1,
-            userName: 'PeerAdmin',
-            roles: [ 'PeerAdmin', 'ChannelAdmin' ]
-        };
-        const deployerCard = new IdCard(deployerMetadata, connectionProfile);
-        deployerCard.setCredentials(credentials);
-
-        const deployerCardName = 'PeerAdmin';
-        adminConnection = new AdminConnection({ cardStore: cardStore });
-
-        return adminConnection.importCard(deployerCardName, deployerCard).then(() => {
-            return adminConnection.connect(deployerCardName);
-        });
+    var contract = factory.newResource(A_NS, 'Contract', param.Id);
+    contract.founder = factory.newRelationship(P_NS, 'EndUser', currentParticipant.getIdentifier());
+    contract.signatures = param.menbers.map(function (item) {
+        var signature = factory.newConcept(A_NS, 'Signature');
+        signature.user = factory.newRelationship(P_NS, 'EndUser', item.getIdentifier());
+        signature.status = 'WaitSigning';
+        return signature;
     });
 
-    beforeEach(() => {
-        businessNetworkConnection = new BusinessNetworkConnection({ cardStore: cardStore });
 
-        const adminUserName = 'admin';
-        let adminCardName;
-        let businessNetworkDefinition;
+    contract.Title = param.Title;
+    contract.Extension = param.Extension;
+    contract.Content = param.Content;
+    contract.ContentHash = param.ContentHash;
+    //Template pass not implement yet
+    contract.templateData = param.templateData;
+    contract.status = 'WaitSigning';
+    contract.SignDeadline = param.SignDeadline;
 
-        return BusinessNetworkDefinition.fromDirectory(path.resolve(__dirname, '..')).then(definition => {
-            businessNetworkDefinition = definition;
-            // Install the Composer runtime for the new business network
-            return adminConnection.install(businessNetworkDefinition.getName());
-        }).then(() => {
-            // Start the business network and configure an network admin identity
-            const startOptions = {
-                networkAdmins: [
-                    {
-                        userName: adminUserName,
-                        enrollmentSecret: 'adminpw'
-                    }
-                ]
-            };
-            return adminConnection.start(businessNetworkDefinition, startOptions);
-        }).then(adminCards => {
-            // Import the network admin identity for us to use
-            adminCardName = `${adminUserName}@${businessNetworkDefinition.getName()}`;
-            return adminConnection.importCard(adminCardName, adminCards.get(adminUserName));
-        }).then(() => {
-            // Connect to the business network using the network admin identity
-            return businessNetworkConnection.connect(adminCardName);
+    // save the order
+    return getAssetRegistry(contract.getFullyQualifiedType())
+        .then(function (assetRegistry) {
+            return assetRegistry.add(contract);
+        })
+        .then(function () {
+            // emit the event
+            //var placeOrderEvent = factory.newEvent(namespace, 'PlaceOrderEvent');
+            //placeOrderEvent.orderId = order.orderId;
+            //placeOrderEvent.vehicleDetails = order.vehicleDetails;
+            //placeOrderEvent.options = order.options;
+            //placeOrderEvent.orderer = order.orderer;
+            //emit(placeOrderEvent);
         });
+}
+
+/**
+ * @param {org.synu.contractnetwork.transactions.SignContract} SignContract.
+ * @transaction
+ */
+function SignContract(param) {
+    // Get the current participant.
+    var currentParticipant = getCurrentParticipant();
+    var factory = getFactory();
+    var A_NS = 'org.synu.contractnetwork.assets';
+    if (param.status == 'WaitSigning' ||
+    param.contract.status == 'Effective' ||
+    param.contract.status == 'Rejected' ||
+    param.contract.status == 'Revoked' ||
+    param.contract.status == 'Closed') {
+        throw new Error('Status Error');
+    }
+    if (param.contract.SignDeadline < new Date()) {
+        throw new Error('Status Error');
+    }
+    //param.contract.status = 'Revoked';
+
+    var signedCount = 0;
+    var total = param.contract.signatures.length;
+    param.contract.signatures.forEach(function(signature){
+
+        if(signature.user.getIdentifier() == currentParticipant.getIdentifier())
+        {
+            if (signature.status != 'WaitSigning'){
+                throw new Error('Already signed');
+            }
+            signature.status = param.status;
+            if("undefined" == typeof param.sealImage)signature.sealImage = factory.newRelationship(A_NS, 'SealImage', param.sealImage.getIdentifier());
+            signature.sealImagePos = param.sealImagePos;
+            if("undefined" == typeof param.sealImage)signature.signTextImage = factory.newRelationship(A_NS, 'SignTextImage', param.signTextImage.getIdentifier());
+            signature.signTextImagePos = param.signTextImagePos;
+            signature.SignTime = new Date();
+            if(signature.status == 'Signed')
+            {
+                signedCount++;
+            }
+        }
+        //calc signed number
+        else if(signature.status == 'Signed')
+        {
+            signedCount++;
+        }
     });
 
-    describe('ChangeAssetValue()', () => {
-        it('should change the value property of ' + assetType + ' to newValue', () => {
-            const factory = businessNetworkConnection.getBusinessNetwork().getFactory();
+    if(param.status == 'Reject'){
+        param.contract.status = 'Rejected';
+    }
+    else if(signedCount == total){
+        param.contract.status = 'Effective';
+    }
+    else{
+        param.contract.status = 'PartSigned';
+    }
 
-            // Create a user participant
-            const user = factory.newResource(namespace, 'User', 'EdwardYin');
 
-            // Create the asset
-            const asset = factory.newResource(namespace, assetType, 'ASSET_001');
-            asset.value = 'old-value';
-
-            // Create a transaction to change the asset's value property
-            const changeAssetValue = factory.newTransaction(namespace, 'ChangeAssetValue');
-            changeAssetValue.relatedAsset = factory.newRelationship(namespace, assetType, asset.$identifier);
-            changeAssetValue.newValue = 'new-value';
-
-            let assetRegistry;
-
-            return businessNetworkConnection.getAssetRegistry(namespace + '.' + assetType).then(registry => {
-                assetRegistry = registry;
-                // Add the asset to the appropriate asset registry
-                return registry.add(asset);
-            }).then(() => {
-                return businessNetworkConnection.getParticipantRegistry(namespace + '.User');
-            }).then(userRegistry => {
-                // Add the user to the appropriate participant registry
-                return userRegistry.add(user);
-            }).then(() => {
-                // Submit the transaction
-                return businessNetworkConnection.submitTransaction(changeAssetValue);
-            }).then(registry => {
-                // Get the asset
-                return assetRegistry.get(asset.$identifier);
-            }).then(newAsset => {
-                // Assert that the asset has the new value property
-                newAsset.value.should.equal(changeAssetValue.newValue);
-            });
+    return getAssetRegistry(param.contract.getFullyQualifiedType())
+        .then(function (assetRegistry) {
+            return assetRegistry.update(param.contract);
         });
-    });
+}
+/**
+ * @param {org.synu.contractnetwork.transactions.RevokeContract} RevokeContract.
+ * @transaction
+ */
+function RevokeContract(param) {
+    // Get the current participant.
+    //var currentParticipant = getCurrentParticipant();
+    //if (currentParticipant.getIdentifier() != param.founder.getIdentifier()) {
+    //    throw new Error('You are not founder');
+    //}
+    var factory = getFactory();
+    var A_NS = 'org.synu.contractnetwork.assets';
+    if (param.contract.status == 'Effective' ||
+    param.contract.status == 'Rejected' ||
+    param.contract.status == 'Revoked' ||
+    param.contract.status == 'Closed') {
+        throw new Error('Status Error');
+    }
+    if (param.contract.SignDeadline < new Date()) {
+        throw new Error('Status Error');
+    }
+    param.contract.status = 'Revoked';
 
-});
+    return getAssetRegistry(param.contract.getFullyQualifiedType())
+        .then(function (assetRegistry) {
+            return assetRegistry.update(param.contract);
+        });
+}
+/**
+ * @param {org.synu.contractnetwork.transactions.TestMethod} transaction.
+ * @transaction
+ */
+// function TestMethod() {
+//     // Get the current participant.
+//     var currentParticipant = getCurrentParticipant();
+//     var factory = getFactory();
+//     var A_NS = 'org.synu.contractnetwork.assets';
+//     var asset = factory.newResource(A_NS, 'TestAsset', currentParticipant.getIdentifier());
+
+//     return getAssetRegistry(asset.getFullyQualifiedType())
+//         .then(function (assetRegistry) {
+//             return assetRegistry.add(asset);
+//         });
+// }

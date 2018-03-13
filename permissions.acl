@@ -1,7 +1,8 @@
 /**
  * Sample access control list.
  */
-rule EverybodyCanReadEverything {
+
+rule EverybodyCanSeeOtherBodys {
     description: "Allow all participants read access to all resources"
     participant: "org.synu.contractnetwork.participants.EndUser"
     operation: READ
@@ -16,6 +17,33 @@ rule EverybodyCanCreateContract {
     resource: "org.synu.contractnetwork.transactions.CreateContract"
     action: ALLOW
 }
+//可以签署合同
+rule EverybodyCanSignContract {
+    description: "Allow all participants to submit SignContract"
+    participant: "org.synu.contractnetwork.participants.EndUser"
+    operation: CREATE
+    resource: "org.synu.contractnetwork.transactions.SignContract"
+    action: ALLOW
+}
+//可以撤销自己的合同
+rule EverybodyCanRevokeHisContract {
+    description: "Allow all participants to submit RevokeContract"
+    participant(p): "org.synu.contractnetwork.participants.EndUser"
+    operation: CREATE
+    resource(r): "org.synu.contractnetwork.transactions.RevokeContract"
+    condition: (r.contract.founder.getIdentifier() === p.getIdentifier())
+    action: ALLOW
+}
+//可以查询合同合法性
+rule EverybodyCanContractVerify {
+    description: "Allow all participants to submit ContractVerify"
+    participant: "org.synu.contractnetwork.participants.EndUser"
+    operation: CREATE
+    resource: "org.synu.contractnetwork.transactions.ContractVerify"
+    action: ALLOW
+}
+
+
 //访问自己的资源
 rule OwnerHasFullAccessToTheirTemplates {
     description: "Allow all participants full access to their Templates"
@@ -23,6 +51,48 @@ rule OwnerHasFullAccessToTheirTemplates {
     operation: ALL
     resource(r): "org.synu.contractnetwork.assets.Template"
     condition: (r.owner.getIdentifier() === p.getIdentifier())
+    action: ALLOW
+}
+rule OwnerHasFullAccessToTheirContracts {
+    description: "Allow all participants full access to their Templates"
+    participant(p): "org.synu.contractnetwork.participants.EndUser"
+    operation: ALL
+    resource(r): "org.synu.contractnetwork.assets.Contract"
+    condition: (r.founder.getIdentifier() === p.getIdentifier())
+    action: ALLOW
+}
+//包含他的合同
+rule OwnerHasFullAccessToTheirContracts2 {
+    description: "Allow all participants full access to their Templates"
+    participant(p): "org.synu.contractnetwork.participants.EndUser"
+    operation: ALL
+    resource(r): "org.synu.contractnetwork.assets.Contract"
+    //condition: (r.signatures.some(function chk(r2,p) {return r2.EndUser.getIdentifier() === p.getIdentifier()}))
+    condition: (r.signatures.some(function chk(r2,p) {return true}))
+    action: ALLOW
+}
+rule OwnerHasFullAccessToTheirSealImages {
+    description: "Allow all participants full access to their Templates"
+    participant(p): "org.synu.contractnetwork.participants.EndUser"
+    operation: ALL
+    resource(r): "org.synu.contractnetwork.assets.SealImage"
+    condition: (r.owner.getIdentifier() === p.getIdentifier())
+    action: ALLOW
+}
+rule OwnerHasFullAccessToTheirSignTextImages {
+    description: "Allow all participants full access to their Templates"
+    participant(p): "org.synu.contractnetwork.participants.EndUser"
+    operation: ALL
+    resource(r): "org.synu.contractnetwork.assets.SignTextImage"
+    condition: (r.owner.getIdentifier() === p.getIdentifier())
+    action: ALLOW
+}
+
+rule AllCanCreateItems {
+    description: "Allow all participants full access to their Alls"
+    participant: "org.synu.contractnetwork.participants.EndUser"
+    operation: CREATE
+    resource: "org.synu.contractnetwork.assets.**"
     action: ALLOW
 }
 

@@ -108,6 +108,8 @@ Create a `SealImage` asset for Bob:
   "owner": "resource:org.synu.contractnetwork.participants.EndUser#Bob@example.org"
 }
 ```
+Create Name Card Alice and Bob
+
 
 Submit a `CreateContract` transaction:
 
@@ -115,7 +117,6 @@ Submit a `CreateContract` transaction:
 {
   "$class": "org.synu.contractnetwork.transactions.CreateContract",
   "Id": "Contract1",
-  "founder": "resource:org.synu.contractnetwork.participants.EndUser#Alice@example.org",
   "menbers": [
     "resource:org.synu.contractnetwork.participants.EndUser#Alice@example.org",
     "resource:org.synu.contractnetwork.participants.EndUser#Bob@example.org"
@@ -126,6 +127,38 @@ Submit a `CreateContract` transaction:
   "SignDeadline": "2018-03-15T12:34:07.270Z"
 }
 ```
+
+Submit a `SignContract` transaction:
+```
+{
+  "$class": "org.synu.contractnetwork.transactions.SignContract",
+  "contract": "resource:org.synu.contractnetwork.assets.Contract#Contract1",
+  "sealImage": "resource:org.synu.contractnetwork.assets.SealImage#1",
+  "sealImagePos": {
+    "$class": "org.synu.contractnetwork.assets.SignatureImagePos",
+    "x": 100,
+    "y": 200
+  },
+  "status": "Signed"
+}
+```
+
+
+Submit a `RevokeContract` transaction:
+```
+{
+  "$class": "org.synu.contractnetwork.transactions.RevokeContract",
+  "contract": "resource:org.synu.contractnetwork.assets.Contract#Contract1"
+}
+
+
+
+
+```
+
+
+
+
 
 After submitting this transaction, you should now see the transaction in the Transaction Registry and that a `SampleEvent` has been emitted. As a result, the value of the `assetId:1` should now be `new value` in the Asset Registry.
 

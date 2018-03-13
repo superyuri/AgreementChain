@@ -75,7 +75,7 @@ concept Signature {
   o SignStatus status                           //签署状态
   --> SealImage sealImage optional              //图章
   o SignatureImagePos sealImagePos optional     //图章位置
-  --> SignTextImage signImage optional          //签名
+  --> SignTextImage signTextImage optional          //签名
   o SignatureImagePos signTextImagePos optional //签名位置
   o DateTime SignTime optional                  //签署时间
 }
