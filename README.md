@@ -17,9 +17,11 @@ This business network defines:
 **Event**
 `SampleEvent`
 
-Contract are owned by a EndUser, and the value property on a SampleAsset can be modified by submitting a SampleTransaction. The SampleTransaction emits a SampleEvent that notifies applications of the old and new values for each modified SampleAsset.
+区块链电子合同
 
 To test this Business Network Definition in the **Test** tab:
+
+测试代码
 
 Create Alice `EndUser` participant:
 
@@ -79,6 +81,35 @@ Create Bob `EndUser` participant:
 }
 ```
 
+Create Charlie `EndUser` participant:
+
+```
+{
+  "$class": "org.synu.contractnetwork.participants.EndUser",
+  "Id": "Charlie@example.org",
+  "personInfo": {
+    "$class": "org.synu.contractnetwork.participants.Person",
+    "title": "Charlie Robot",
+    "IDCard": "3110011995010115349",
+    "firstName": "Charlie",
+    "lastName": "Robot",
+    "contactDetails": {
+      "$class": "org.synu.contractnetwork.participants.ContactDetails",
+      "email": "Charlie@example.org",
+      "mobilePhone": "13012345678",
+      "address": {
+        "$class": "org.synu.contractnetwork.participants.Address",
+        "city": "Shenyang",
+        "country": "China",
+        "street": "Shenyang Normal University",
+        "postalCode": "110024"
+      }
+    }
+  },
+  "userType": "Personal"
+}
+```
+
 Create a `SealImage` asset for Alice:
 
 ```
@@ -108,11 +139,13 @@ Create a `SealImage` asset for Bob:
   "owner": "resource:org.synu.contractnetwork.participants.EndUser#Bob@example.org"
 }
 ```
-Create Name Card Alice and Bob
+Create Name Card Alice and Bob and Charlie
 
+Use Alice Account
 
-Submit a `CreateContract` transaction:
+Submit 3 `CreateContract` transaction:
 
+1. 演示被撤回的合同
 ```
 {
   "$class": "org.synu.contractnetwork.transactions.CreateContract",
@@ -127,8 +160,43 @@ Submit a `CreateContract` transaction:
   "SignDeadline": "2018-03-15T12:34:07.270Z"
 }
 ```
+2. 演示被拒绝签署的合同
 
-Submit a `SignContract` transaction:
+```
+{
+  "$class": "org.synu.contractnetwork.transactions.CreateContract",
+  "Id": "Contract2",
+  "menbers": [
+    "resource:org.synu.contractnetwork.participants.EndUser#Alice@example.org",
+    "resource:org.synu.contractnetwork.participants.EndUser#Bob@example.org"
+  ],
+  "Title": "转让协议",
+  "Extension": "pdf",
+  "ContentHash": "7E7BE2D1016085F85C9C383EF4040FC0B2DF93DA506B26DD6AC45886FEE0231E",
+  "SignDeadline": "2018-03-15T12:34:07.270Z"
+}
+```
+
+3. 演示成功的三人签署的合同
+
+```
+{
+  "$class": "org.synu.contractnetwork.transactions.CreateContract",
+  "Id": "Contract3",
+  "menbers": [
+    "resource:org.synu.contractnetwork.participants.EndUser#Alice@example.org",
+    "resource:org.synu.contractnetwork.participants.EndUser#Bob@example.org",
+    "resource:org.synu.contractnetwork.participants.EndUser#Charlie@example.org"
+  ],
+  "Title": "三人合作创业合同",
+  "Extension": "pdf",
+  "ContentHash": "2764D74AA847F859474D3318F06BF274CDC4737AFFE4D73B477BC8176DB426E1",
+  "SignDeadline": "2018-03-15T12:34:07.270Z"
+}
+```
+Alice 在三份合同都签署并盖章了
+
+Alice Submit Contract1-3 `SignContract` transaction:
 ```
 {
   "$class": "org.synu.contractnetwork.transactions.SignContract",
@@ -143,24 +211,50 @@ Submit a `SignContract` transaction:
 }
 ```
 
+Alice撤回和第一份合同
 
-Submit a `RevokeContract` transaction:
+Alice Submit a `RevokeContract` transaction:
 ```
 {
   "$class": "org.synu.contractnetwork.transactions.RevokeContract",
   "contract": "resource:org.synu.contractnetwork.assets.Contract#Contract1"
 }
-
-
-
-
 ```
 
+Bob拒绝签署第二份合同
 
+Bob Submit Contract2 `SignContract` transaction,but params'Reject':
+```
+{
+  "$class": "org.synu.contractnetwork.transactions.SignContract",
+  "contract": "resource:org.synu.contractnetwork.assets.Contract#Contract2",
+  "status": "Reject"
+}
+```
+Bob在第三份合同上署名并盖章
 
+Bob Submit Contract3 `SignContract` transaction:
+```
+{
+  "$class": "org.synu.contractnetwork.transactions.SignContract",
+  "contract": "resource:org.synu.contractnetwork.assets.Contract#Contract3",
+  "sealImage": "resource:org.synu.contractnetwork.assets.SealImage#2",
+  "sealImagePos": {
+    "$class": "org.synu.contractnetwork.assets.SignatureImagePos",
+    "x": 100,
+    "y": 200
+  },
+  "status": "Signed"
+}
+```
 
+Charlie再第三份合同上署名
 
-After submitting this transaction, you should now see the transaction in the Transaction Registry and that a `SampleEvent` has been emitted. As a result, the value of the `assetId:1` should now be `new value` in the Asset Registry.
-
-Congratulations!
-
+Charlie Submit Contract3 `SignContract` transaction:
+```
+{
+  "$class": "org.synu.contractnetwork.transactions.SignContract",
+  "contract": "resource:org.synu.contractnetwork.assets.Contract#Contract3",
+  "status": "Signed"
+}
+```
