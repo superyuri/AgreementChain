@@ -1,6 +1,6 @@
 {
     "name": "agreement-network",
-    "version": "0.0.1",
+    "version": "0.1.0-beta",
     "description": "agreement network",
     "scripts": {
       "test": "mocha --recursive"
