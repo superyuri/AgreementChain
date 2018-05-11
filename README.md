@@ -1,29 +1,23 @@
-# Basic Sample Business Network
-# org.synu.contractnetwork
+# Agreement Chian Business Network 区块链电子合同
 
-> This is the "Hello World" of Hyperledger Composer samples, which demonstrates the core functionality of Hyperledger Composer by changing the value of an asset.
+> 区块链电子合同基于超级账本Composer，用户可以在链上面发布合同，签署合同。
 
-This business network defines:
+网络定义了如下实体和交易类型：
 
-**Participant**
+**参与者 Participant**
 `EndUser`
 
-**Asset**
+**资产 Asset**
 `Contract` `SealImage` `SignTextImage` `Template`
 
-**Transaction**
+**交易 Transaction**
 `CreateContract` `SignContract` `RevokeContract` `ContractVerify`
 
-**Event**
-`SampleEvent`
-
-区块链电子合同
-
-To test this Business Network Definition in the **Test** tab:
+想要测试这个项目，点击 **Test** 标签：
 
 测试代码
 
-Create Alice `EndUser` participant:
+创建名为 Alice 的 `EndUser` 参与者：
 
 ```
 {
@@ -52,7 +46,7 @@ Create Alice `EndUser` participant:
 }
 ```
 
-Create Bob `EndUser` participant:
+创建名为 Bob 的 `EndUser` 参与者：
 
 ```
 {
@@ -81,7 +75,7 @@ Create Bob `EndUser` participant:
 }
 ```
 
-Create Charlie `EndUser` participant:
+创建名为 Charlie 的 `EndUser` 参与者：
 
 ```
 {
@@ -110,7 +104,7 @@ Create Charlie `EndUser` participant:
 }
 ```
 
-Create a `SealImage` asset for Alice:
+为Alice创建 `SealImage` 资产：
 
 ```
 {
@@ -125,7 +119,7 @@ Create a `SealImage` asset for Alice:
 }
 ```
 
-Create a `SealImage` asset for Bob:
+为Bob创建 `SealImage` 资产：
 
 ```
 {
@@ -139,11 +133,12 @@ Create a `SealImage` asset for Bob:
   "owner": "resource:org.synu.contractnetwork.participants.EndUser#Bob@example.org"
 }
 ```
-Create Name Card Alice and Bob and Charlie
 
-Use Alice Account
+为Alice Bob Charlie创建身份卡
 
-Submit 3 `CreateContract` transaction:
+以Alice身份登陆
+
+提交下面3个`CreateContract`交易：
 
 1. 演示被撤回的合同
 ```
@@ -161,7 +156,6 @@ Submit 3 `CreateContract` transaction:
 }
 ```
 2. 演示被拒绝签署的合同
-
 ```
 {
   "$class": "org.synu.contractnetwork.transactions.CreateContract",
@@ -176,9 +170,7 @@ Submit 3 `CreateContract` transaction:
   "SignDeadline": "2018-03-15T12:34:07.270Z"
 }
 ```
-
 3. 演示成功的三人签署的合同
-
 ```
 {
   "$class": "org.synu.contractnetwork.transactions.CreateContract",
@@ -194,9 +186,11 @@ Submit 3 `CreateContract` transaction:
   "SignDeadline": "2018-03-15T12:34:07.270Z"
 }
 ```
-Alice 在三份合同都签署并盖章了
 
 Alice Submit Contract1-3 `SignContract` transaction:
+
+（Alice 在三份合同都签署并盖章了）
+
 ```
 {
   "$class": "org.synu.contractnetwork.transactions.SignContract",
