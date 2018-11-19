@@ -1,4 +1,6 @@
-# Agreement Chian Business Network 区块链电子合同
+# Agreement Chian Business Network 
+
+# 区块链电子合同
 
 > 区块链电子合同基于超级账本Composer，用户可以在链上面发布合同，签署合同。
 
